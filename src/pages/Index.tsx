@@ -7,9 +7,13 @@ import TransitOption from "@/components/TransitOption";
 import { Navigation } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [selectedTab, setSelectedTab] = useState("routes");
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const transitOptions = [
     {
@@ -18,7 +22,7 @@ const Index = () => {
       time: "30 min",
       price: "Rs. 25",
       stops: 3,
-      onClick: () => console.log("Selected local bus"),
+      onClick: () => isAuthenticated ? console.log("Selected local bus") : navigate("/login"),
     },
     {
       icon: <Navigation className="h-4 w-4 text-transit-green" />,
@@ -26,7 +30,7 @@ const Index = () => {
       time: "20 min",
       price: "Rs. 40",
       stops: 1,
-      onClick: () => console.log("Selected micro bus"),
+      onClick: () => isAuthenticated ? console.log("Selected micro bus") : navigate("/login"),
     },
     {
       icon: <Navigation className="h-4 w-4 text-transit-orange" />,
@@ -34,7 +38,7 @@ const Index = () => {
       time: "15 min",
       price: "Rs. 80",
       stops: 0,
-      onClick: () => console.log("Selected shared taxi"),
+      onClick: () => isAuthenticated ? console.log("Selected shared taxi") : navigate("/login"),
     },
   ];
 
@@ -57,6 +61,17 @@ const Index = () => {
               </TabsList>
               <TabsContent value="routes" className="pt-4">
                 <RouteFinder />
+                {!isAuthenticated && (
+                  <div className="mt-4 bg-muted p-3 rounded-md text-sm text-muted-foreground">
+                    <span>Create an account to save routes and get personalized recommendations. </span>
+                    <button 
+                      className="text-transit-blue hover:underline font-medium"
+                      onClick={() => navigate("/register")}
+                    >
+                      Sign up now
+                    </button>
+                  </div>
+                )}
               </TabsContent>
               <TabsContent value="schedules" className="pt-4">
                 <div className="bg-white rounded-lg p-6 nepal-shadow text-center">
